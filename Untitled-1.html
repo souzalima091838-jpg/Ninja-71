@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recarga de Moedas</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background: #f5f5f7;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 420px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+
+        .header-top {
+            background: linear-gradient(135deg, #2c2c2e, #1d1d1f);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+        }
+
+        .user-section {
+            padding: 25px 20px 15px;
+        }
+
+        .user-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .user-info {
+            flex: 1;
+        }
+
+        .username {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1d1d1f;
+        }
+
+        .coins-display {
+            text-align: right;
+            font-size: 18px;
+            font-weight: 600;
+            color: #b8860b;
+        }
+
+        .change-name-area {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        input {
+            flex: 1;
+            min-width: 180px;
+            padding: 10px 14px;
+            border: 2px solid #e5e5e7;
+            border-radius: 10px;
+            font-size: 15px;
+            transition: border 0.2s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #007aff;
+        }
+
+        .btn {
+            padding: 10px 18px;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-confirm {
+            background: #007aff;
+            color: white;
+        }
+
+        .btn-confirm:hover {
+            background: #0066cc;
+        }
+
+        .btn-done {
+            background: #34c759;
+            color: white;
+        }
+
+        .btn-done:hover {
+            background: #28a745;
+        }
+
+        .btn-send {
+            background: #ff9500;
+            color: white;
+            width: 100%;
+            margin-top: 15px;
+            font-size: 16px;
+            padding: 12px;
+        }
+
+        .btn-send:hover {
+            background: #e68600;
+        }
+
+        .countdown-box {
+            background: #fff3cd;
+            border: 1px solid #ffeeba;
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .countdown-box.active {
+            display: block;
+        }
+
+        .countdown-text {
+            font-size: 16px;
+            color: #856404;
+            margin-bottom: 8px;
+        }
+
+        .countdown-number {
+            font-size: 32px;
+            font-weight: bold;
+            color: #d63031;
+        }
+
+        .done-box {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 12px;
+            padding: 18px;
+            text-align: center;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .done-box.show {
+            display: block;
+        }
+
+        .done-text {
+            font-size: 18px;
+            color: #155724;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .custom-box {
+            background: #eef2ff;
+            border: 1px solid #c7d2fe;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .custom-box.show {
+            display: block;
+        }
+
+        .custom-title {
+            font-size: 15px;
+            color: #3730a3;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .invite-banner {
+            background: #fef3c7;
+            padding: 15px 20px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .invite-icon {
+            font-size: 24px;
+        }
+
+        .invite-text h4 {
+            color: #92400e;
+            font-size: 15px;
+        }
+
+        .invite-text p {
+            color: #b45309;
+            font-size: 13px;
+        }
+
+        h2 {
+            font-size: 22px;
+            color: #1d1d1f;
+            margin-bottom: 10px;
+        }
+
+        .info-note {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            color: #6e6e73;
+            font-size: 14px;
+            margin-bottom: 25px;
+        }
+
+        .info-icon {
+            color: #ff3b30;
+            font-weight: bold;
+        }
+
+        .packages-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .package-card {
+            border: 2px solid #e5e5e7;
+            border-radius: 12px;
+            padding: 15px 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: white;
+        }
+
+        .package-card.selected {
+            border-color: #ff3b30;
+            background: #fff5f5;
+        }
+
+        .package-card .coin-amount {
+            font-size: 18px;
+            font-weight: 600;
+            color: #b8860b;
+            margin-bottom: 5px;
+        }
+
+        .package-card .price {
+            font-size: 14px;
+            color: #1d1d1f;
+        }
+
+        .package-card.highlighted {
+            border-color: #ff3b30;
+            background: #fff5f5;
+            transform: scale(1.03);
+        }
+
+        .section-title {
+            font-size: 16px;
+            color: #6e6e73;
+            margin-bottom: 15px;
+        }
+
+        .payment-methods {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .payment-option {
+            flex: 1;
+            border: 2px solid #e5e5e7;
+            border-radius: 10px;
+            padding: 15px 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .payment-option.selected {
+            border-color: #007aff;
+            background: #f0f8ff;
+        }
+
+        .payment-option .icon {
+            font-size: 22px;
+            margin-bottom: 5px;
+        }
+
+        .payment-option .name {
+            font-size: 13px;
+            color: #1d1d1f;
+        }
+
+        .total-section {
+            border-top: 1px solid #e5e5e7;
+            padding-top: 20px;
+            text-align: right;
+            font-size: 20px;
+            font-weight: 600;
+            color: #1d1d1f;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Cabeçalho -->
+        <div class="header-top">
+            <span>📱 Recarga</span>
+            <span>84%</span>
+        </div>
+
+        <div class="user-section">
+            <!-- Área do Usuário -->
+            <div class="user-row">
+                <div class="avatar">?</div>
+                <div class="user-info">
+                    <div class="username" id="displayName">Fadayaya2</div>
+                </div>
+                <div class="coins-display">🟡 106.050</div>
+            </div>
+
+            <!-- Alterar Nome -->
+            <div class="change-name-area">
+                <input type="text" id="usernameInput" placeholder="Digite o @ da pessoa...">
+                <button class="btn btn-confirm" onclick="confirmName()">✅ Confirmar</button>
+            </div>
+
+            <!-- Contagem Regressiva -->
+            <div class="countdown-box" id="countdownBox">
+                <div class="countdown-text">⏳ Aguarde um instante...</div>
+                <div class="countdown-number" id="countdownNumber">5</div>
+            </div>
+
+            <!-- Concluído -->
+            <div class="done-box" id="doneBox">
+                <div class="done-text">✅ Enviado com sucesso para <span id="finalName"></span>!</div>
+                <div style="margin-bottom: 10px; font-size: 15px; color: #2f855a;">
+                    🟡 <span id="finalCoins"></span> moedas enviadas
+                </div>
+                <button class="btn btn-done" onclick="resetAll()">OK</button>
+            </div>
+
+            <!-- Personalizar Moedas -->
+            <div class="custom-box" id="customBox">
+                <div class="custom-title">⚙️ Personalizar quantidade de moedas</div>
+                <input type="number" id="customCoinsInput" placeholder="Digite quantas moedas você quer..." oninput="updateCustomPrice()">
+                <div style="margin-top: 10px; font-size: 14px; color: #4f46e5;">
+                    Preço estimado: R$ <span id="customPriceDisplay">0,00</span>
+                </div>
+                <button class="btn btn-confirm" style="margin-top: 10px; width: 100%;" onclick="confirmCustomCoins()">✅ Usar este valor</button>
+            </div>
+
+            <!-- Banner Convide e Ganhe -->
+            <div class="invite-banner">
+                <span class="invite-icon">🤝</span>
+                <div class="invite-text">
+                    <h4>Convide e ganhe recompensas</h4>
+                    <p>Indique amigos e ganhe bônus em moedas</p>
+                </div>
+            </div>
+
+            <!-- Área de Recarga -->
+            <h2>Recarregar</h2>
+            <div class="info-note">
+                <span class="info-icon">ⓘ</span>
+                <span>Economize cerca de 25% com uma taxa de serviço de terceiros mais baixa.</span>
+            </div>
+
+            <!-- Pacotes de Moedas -->
+            <div class="packages-grid">
+                <div class="package-card" onclick="selectPackage(this, 30, 1.69)">
+                    <div class="coin-amount">🟡 30</div>
+                    <div class="price">R$ 1,69</div>
+                </div>
+                <div class="package-card" onclick="selectPackage(this, 100, 5.57)">
+                    <div class="coin-amount">🟡 100</div>
+                    <div class="price">R$ 5,57</div>
+                </div>
+                <div class="package-card" onclick="selectPackage(this, 150, 8.35)">
+                    <div class="coin-amount">🟡 150</div>
+                    <div class="price">R$ 8,35</div>
+                </div>
+                <div class="package-card" onclick="selectPackage(this, 200, 11.15)">
+                    <div class="coin-amount">🟡 200</div>
+                    <div class="price">R$ 11,15</div>
+                </div>
+                <div class="package-card highlighted selected" onclick="selectPackage(this, 300, 16.69)">
+                    <div class="coin-amount">🟡 300</div>
+                    <div class="price">R$ 16,69</div>
+                </div>
+                <div class="package-card" onclick="openCustomBox(this)">
+                    <div class="coin-amount">⚙️</div>
+                    <div class="price">Personalizar</div>
+                </div>
+            </div>
+
+            <!-- Forma de Pagamento -->
+            <div class="section-title">Forma de pagamento <span style="color:#007aff">Pix (Instantâneo)</span></div>
+            <div class="payment-methods">
+                <div class="payment-option selected" onclick="selectPayment(this)">
+                    <div class="icon">⚡</div>
+                    <div class="name">Pix</div>
+                </div>
+                <div class="payment-option" onclick="selectPayment(this)">
+                    <div class="icon">💳</div>
+                    <div class="name">Visa</div>
+                </div>
+                <div class="payment-option" onclick="selectPayment(this)">
+                    <div class="icon">🟥</div>
+                    <div class="name">Master</div>
+                </div>
+                <div class="payment-option" onclick="selectPayment(this)">
+                    <div class="icon">🅿️</div>
+                    <div class="name">PayPal</div>
+                </div>
+            </div>
+
+            <!-- Total -->
+            <div class="total-section">
+                Total: R$ <span id="totalPrice">16,69</span>
+            </div>
+
+            <!-- Botão Enviar -->
+            <button class="btn btn-send" onclick="sendCoins()">🚀 Enviar Moedas</button>
+        </div>
+    </div>
+
+    <script>
+        let countdownInterval;
+        let selectedCoins = 300;
+        let selectedPrice = 16.69;
+        let targetUsername = '';
+        const COIN_PRICE_RATIO = 0.0557; // Preço por moeda baseado no pacote de 100 = R$5,57
+
+        // Abrir caixa de personalização
+        function openCustomBox(card) {
+            document.querySelectorAll('.package-card').forEach(c => c.classList.remove('selected'));
+            card.classList.add('selected');
+            document.getElementById('customBox').classList.add('show');
+        }
+
+        // Atualizar preço conforme digita as moedas
+        function updateCustomPrice() {
+            const coins = parseInt(document.getElementById('customCoinsInput').value) || 0;
+            const price = (coins * COIN_PRICE_RATIO).toFixed(2);
+            document.getElementById('customPriceDisplay').textContent = price.replace('.', ',');
+        }
+
+        // Confirmar valor personalizado
+        function confirmCustomCoins() {
+            const coins = parseInt(document.getElementById('customCoinsInput').value) || 0;
+            if (coins <= 0) {
+                alert('Digite uma quantidade válida de moedas!');
+                return;
+            }
+            selectedCoins = coins;
+            selectedPrice = coins * COIN_PRICE_RATIO;
+            document.getElementById('totalPrice').textContent = selectedPrice.toFixed(2).replace('.', ',');
+            document.getElementById('customBox').classList.remove('show');
+        }
+
+        // Confirmar nome do usuário
+        function confirmName() {
+            const input = document.getElementById('usernameInput');
+            const newName = input.value.trim();
+            
+            if (newName === '') {
+                alert('Digite o @ da pessoa!');
+                return;
+            }
+            targetUsername = newName;
+            document.getElementById('displayName').textContent = newName;
+            input.value = '';
+        }
+
+        // Selecionar pacote pronto
+        function selectPackage(card, coins, price) {
+            document.querySelectorAll('.package-card').forEach(c => c.classList.remove('selected'));
+            document.getElementById('customBox').classList.remove('show');
+            card.classList.add('selected');
+            selectedCoins = coins;
+            selectedPrice = price;
+            document.getElementById('totalPrice').textContent = price.toFixed(2).replace('.', ',');
+        }
+
+        // Selecionar pagamento
+        function selectPayment(card) {
+            document.querySelectorAll('.payment-option').forEach(c => c.classList.remove('selected'));
+            card.classList.add('selected');
+        }
+
+        // Enviar moedas — iniciar contagem
+        function sendCoins() {
+            if (!targetUsername || targetUsername === 'Fadayaya2') {
+                alert('Digite e confirme o @ da pessoa primeiro!');
+                return;
+            }
+            if (selectedCoins <= 0) {
+                alert('Escolha quantas moedas deseja enviar!');
+                return;
+            }
+            startCountdown();
+        }
+
+        // Contagem regressiva
+        function startCountdown() {
+            const countdownBox = document.getElementById('countdownBox');
+            const doneBox = document.getElementById('doneBox');
+            const countdownNumber = document.getElementById('countdownNumber');
+            
+            doneBox.classList.remove('show');
+            countdownBox.classList.add('active');
+            
+            let timeLeft = 5;
+            countdownNumber.textContent = timeLeft;
+            
+            clearInterval(countdownInterval);
+            countdownInterval = setInterval(() => {
+                timeLeft--;
+                countdownNumber.textContent = timeLeft;
+                if (timeLeft <= 0) {
+                    clearInterval(countdownInterval);
+                    countdownBox.classList.remove('active');
+                    document.getElementById('finalName').textContent = targetUsername;
+                    document.getElementById('finalCoins').textContent = selectedCoins;
+                    doneBox.classList.add('show');
+                }
+            }, 1000);
+        }
+
+        // Resetar tudo
+        function resetAll() {
+            document.getElementById('doneBox').classList.remove('show');
+            document.getElementById('displayName').textContent = 'Fadayaya2';
+            targetUsername = '';
+        }
+    </script>
+</body>
+</html>
